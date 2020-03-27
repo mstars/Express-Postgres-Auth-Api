@@ -1,0 +1,20 @@
+{
+  "name": "Express-Postgres-Auth-Api",
+  "version": "1.0.0",
+  "description": "An authentication system using Postgress and Express",
+  "main": "server.js",
+  "repository": "git@github.com:mstars/Express-Postgres-Auth-Api.git",
+  "author": "mstars <vellackallintothomas@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2",
+    "pg": "^7.18.2"
+  }
+}

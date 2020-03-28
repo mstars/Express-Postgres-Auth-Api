@@ -1,8 +1,7 @@
 const { pool } = require('./../models/dbconnection');
 
 class userController {
-  constructor() {
-    const view = (request, response) => {
+    async view (request, response){
       pool.query('SELECT * FROM auth_tab', (error, results) => {
         if (error) {
           throw error
@@ -11,7 +10,7 @@ class userController {
       })
     }
 
-    const createAccount = (request, response) => {
+    async createAccount (request, response){
       const { author, title } = request.body
 
       pool.query('INSERT INTO auth_tab (uname, password) VALUES ($1, $2)', [uname, password], error => {
@@ -21,8 +20,7 @@ class userController {
         response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
       })
     }
-  }
 }
 
 
-module.exports = { userController }
+module.exports = new userController

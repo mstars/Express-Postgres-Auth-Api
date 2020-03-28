@@ -6,7 +6,6 @@ const api  = require('./routes/user');
 const pool  = require('./models/dbconnection');
 const userController  = require('./controllers/user');
 
-
 const app = express();
 
 app.use(bodyParser.json());

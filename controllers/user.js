@@ -1,8 +1,8 @@
-const { pool } = require('./../models/dbconnection')
+const { pool } = require('./../models/dbconnection');
 
-class User {
+class userController {
   constructor() {
-    const login = (request, response) => {
+    const view = (request, response) => {
       pool.query('SELECT * FROM auth_tab', (error, results) => {
         if (error) {
           throw error
@@ -25,4 +25,4 @@ class User {
 }
 
 
-module.exports = { User }
+module.exports = { userController }

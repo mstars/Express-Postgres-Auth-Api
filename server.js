@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const { pool } = require('./models/config')
+const { pool } = require('./models/dbconnection')
 const { userController } = require('./controllers/user')
 const router = express.Router();
 

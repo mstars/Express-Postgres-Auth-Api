@@ -1,4 +1,4 @@
-const { pool } = require('./../models/config')
+const { pool } = require('./../models/dbconnection')
 
 class user {
   constructor() {

@@ -25,11 +25,8 @@ app.get('/', (req, res) => res.status(200).send({
 }));
 
 
-  app.route('/auth')
-    // GET endpoint
-    router.get(userController.login)
-    // POST endpoint
-    router.post(userController.createAccount)
+app.post('/api/v1/users/createAccount', userController.createAccount);
+app.post('/api/v1/users/login',userController.login);
 
 
 app.listen(process.env.PORT || 3000, () => {

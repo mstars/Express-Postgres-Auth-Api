@@ -1,6 +1,6 @@
 const { pool } = require('./../models/dbconnection')
 
-class user {
+class User {
   constructor() {
     const login = (request, response) => {
       pool.query('SELECT * FROM auth_tab', (error, results) => {
@@ -25,4 +25,4 @@ class user {
 }
 
 
-module.exports = new user();
+module.exports = { User }

@@ -7,8 +7,15 @@ class userController {
         if (error) {
           throw error
         }
-        response.status(200).json(results.rows)
-        response.status(201).json({ status: 'success', message: 'Login succesfull.' })
+        // console.log(results.rows[0].uname);
+        // response.status(200).json(results.rows)
+        if (results.rows[0].uname == uname && results.rows[0].password == password)
+        {
+          response.status(201).json({ status: 'sucess', message: 'Login succesfully.' })
+        }
+        else {
+          response.status(201).json({ status: 'faild', message: 'Login unsuccesfully.' })
+        }
       })
     }
 

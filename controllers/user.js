@@ -1,7 +1,7 @@
 const { pool } = require('./../models/dbconnection');
 
 class userController {
-    async view (request, response){
+    async doLogin (request, response){
       pool.query('SELECT * FROM auth_tab', (error, results) => {
         if (error) {
           throw error
@@ -10,9 +10,8 @@ class userController {
       })
     }
 
-    async createAccount (request, response){
-      const { author, title } = request.body
-
+    async doCreateAccount (request, response){
+      const { uname, password } = request.body
       pool.query('INSERT INTO auth_tab (uname, password) VALUES ($1, $2)', [uname, password], error => {
         if (error) {
           throw error

@@ -7,7 +7,7 @@ dotenv.config();
 /**
  * Create Auth Table if not in db.
  */
-const createUserTable = () => {
+async function createUserTable() {
   const queryText =
     `CREATE TABLE IF NOT EXISTS
       auth_tab(
@@ -19,23 +19,42 @@ const createUserTable = () => {
         created TIMESTAMP DEFAULT NULL
       )`;
 
-  pool.connect().then(client => {
-    client.query(queryText)
-      .then((res) => {
-        client.release()
-        if (res.rowCount != null) {
-          console.log('Auth table created');
-        }
-      })
-      .catch((err) => {
-        client.release()
-        console.log(err);
-      });
-  }).catch(err => {
+  const client = await pool.connect().catch(err => {
     console.log(err);
-  })
+  });
+  client.query(queryText)
+    .then((res) => {
+      console.log('Auth table created');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  client.release();
 }
 
+async function createTokenTable() {
+  const queryText =
+    `CREATE TABLE IF NOT EXISTS
+      tokens_tab(
+        tid SERIAL PRIMARY KEY,
+        verifyToken VARCHAR(40) UNIQUE NOT NULL,
+        userId INTEGER REFERENCES auth_tab(uid),
+        created TIMESTAMP DEFAULT NULL
+      )`;
+
+  const client = await pool.connect().catch(err => {
+    console.log(err);
+  });
+  client.query(queryText)
+    .then((res) => {
+      console.log('Tokens table created');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  client.release();
+}
 module.exports = {
-  createUserTable
+  createUserTable,
+  createTokenTable
 };

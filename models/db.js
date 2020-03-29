@@ -5,7 +5,7 @@ dotenv.config();
 
 
 /**
- * Create Reflection Table
+ * Create Auth Table if not in db.
  */
 const createUserTable = () => {
   const queryText =
@@ -31,4 +31,4 @@ module.exports = {
   createUserTable
 };
 
-require('make-runnable');
+// require('make-runnable');

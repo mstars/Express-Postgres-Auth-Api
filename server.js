@@ -2,9 +2,14 @@ const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+
+const initDB = require('./models/db');
+
 const api  = require('./routes/user');
 const pool  = require('./models/dbconnection');
 const userController  = require('./controllers/user');
+
+initDB.createUserTable();
 
 const app = express();
 

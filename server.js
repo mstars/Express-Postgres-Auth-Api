@@ -24,11 +24,10 @@ var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(
 var dateTime = date+' '+time;
 
 app.get('/', (req, res) => res.status(200).send({
-   appName        :'Postgres authentication server with express.',
+   appName        :'Postgres Authentication Server with Express.',
    serverStatus   :'Server is running.',
    lastUpdatedTime:dateTime,
-   auther         :'LT',
-   api            :'/api/v1/user/createAccount , /api/v1/user/login'
+   auther         :'LT'
 
 }));
 

@@ -14,30 +14,6 @@ class userController {
     const client = await pool.connect().catch(err => {
       console.log(err);
     })
-
-var email = 'linto@netobjex.com';
-// Create a verification token for this user
-var token = crypto.randomBytes(16).toString('hex');
-
-// Save the verification token
-token.save(function (err) {
- if (err) { return res.status(500).send({ msg: err.message }); }
-
-    // Send the email
-  var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-    var mailOptions = {
-      from: 'no-reply@demo.com',
-      to: email,
-      subject: 'Account Verification Token',
-      text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + 'localhost' + '\/confirmation\/' + token + '.\n'
-    };
-    transporter.sendMail(mailOptions, function (err) {
-        if (err) { return err.status(500).send({ msg: err.message }); }
-        res.status(200).send('A verification email has been sent to ' + email + '.');
-        console.log("Sucess");
-    });
-});
-
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
         if (error) {

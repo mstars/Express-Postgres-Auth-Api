@@ -13,12 +13,14 @@ const createUserTable = () => {
       auth_tab(
         uid SERIAL PRIMARY KEY,
         uname VARCHAR(25) UNIQUE NOT NULL,
-        password VARCHAR(25) UNIQUE NOT NULL,
+        password VARCHAR(25) UNIQUE NOT NULL
       )`;
 
   pool.query(queryText)
     .then((res) => {
-      console.log(res);
+      if(res.rowCount!=null){
+        console.log('Auth table created');
+      }
       pool.end();
     })
     .catch((err) => {

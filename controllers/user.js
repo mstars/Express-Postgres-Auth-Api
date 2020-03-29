@@ -14,20 +14,20 @@ class userController {
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
         if (error) {
-          return response.status(201).json({ status: 'failed', message: 'Login unsuccesful.', error })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccessful.', error })
         }
         if (results.rows.length<1) {
-          return response.status(201).json({ status: 'failed', message: 'Login unsuccesful. Reason: uname incorrect.', error })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: uname incorrect.', error })
         }
         else if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
           const token = jwt.sign({uname: uname},
             process.env.JWT_KEY,
             { expiresIn: '24h' // expires in 24 hours
              });
-          return response.status(201).json({ status: 'sucess', message: 'Login succesfully.', token:token })
+          return response.status(201).json({ status: 'sucess', message: 'Login successful.', token:token })
         }
         else {
-          return response.status(201).json({ status: 'failed', message: 'Login unsuccesfully. Reason: password incorrect.' })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: password incorrect.' })
         }
       })
     }
@@ -57,13 +57,13 @@ class userController {
         if (error) {
           // throw error
           if (error.code == '23505') {
-            return response.status(400).json({ status: 'failed', message: 'Registered unsuccesfully. Reason: Username already taken.' })
+            return response.status(400).json({ status: 'failed', message: 'Registration Failed. Reason: Username already taken.' })
           }
           if (error.code == '23502') {
-            return response.status(400).json({ status: 'failed', message: 'Registered unsuccesfully. Reason: Username can not be null.' })
+            return response.status(400).json({ status: 'failed', message: 'Registration Failed. Reason: Username can not be null.' })
           }
           console.log(error);
-          return response.status(201).json({ status: 'failed', message: 'Registered unsuccesfully.', error })
+          return response.status(201).json({ status: 'failed', message: 'Registration Failed.', error })
         }
         return response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
       })

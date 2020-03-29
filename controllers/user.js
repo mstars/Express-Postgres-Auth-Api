@@ -1,5 +1,9 @@
-const { pool } = require('./../models/dbconnection');
 var bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
+const { pool } = require('./../models/dbconnection');
+const jwtAuth = require('./../middleware/jwtAuth');
+
 const saltRounds = 10;
 
 class userController {
@@ -17,7 +21,11 @@ class userController {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccesful. Reason: uname incorrect.', error })
         }
         else if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
-          return response.status(201).json({ status: 'sucess', message: 'Login succesfully.' })
+          const token = jwt.sign({uname: uname},
+            process.env.JWT_KEY,
+            { expiresIn: '24h' // expires in 24 hours
+             });
+          return response.status(201).json({ status: 'sucess', message: 'Login succesfully.', token:token })
         }
         else {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccesfully. Reason: password incorrect.' })

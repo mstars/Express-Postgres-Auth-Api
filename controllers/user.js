@@ -44,7 +44,7 @@ class userController {
   }
 
   async doCreateAccount(request, response) {
-    const { uname, password } = request.body;
+    const { uname, email, password } = request.body;
 
     const client = await pool.connect().catch(err => {
       console.log(err);
@@ -53,7 +53,12 @@ class userController {
       const hashedPassword = await bcrypt.hash(password, saltRounds).catch(err=>{
         console.log(err);
       })
-      client.query("INSERT INTO auth_tab (uname, password) VALUES ($1, $2)", [uname, hashedPassword], error => {
+      var today = new Date();
+      var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      var dateTime = date+' '+time;
+
+      client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime], error => {
         if (error) {
           // throw error
           if (error.code == '23505') {

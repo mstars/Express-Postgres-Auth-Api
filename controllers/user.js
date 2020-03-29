@@ -30,6 +30,9 @@ class userController {
         error: err
       })
     }
+    finally {
+      client.release();
+    }
   }
 
   async doCreateAccount(request, response) {
@@ -42,6 +45,10 @@ class userController {
             if (error.code == '23505') {
               client.release();
               return response.status(400).json({ status: 'failed', message: 'Registered unsuccesfully. Reason: Username already taken.' })
+            }
+            if (error.code == '23502') {
+              client.release();
+              return response.status(400).json({ status: 'failed', message: 'Registered unsuccesfully. Reason: Username can not be null.' })
             }
             client.release();
             return response.status(201).json({ status: 'failed', message: 'Registered unsuccesfully.', error })
@@ -59,6 +66,9 @@ class userController {
         message: 'Unforseen error occured.',
         error: err
       })
+    }
+    finally {
+      client.release();
     }
   }
 }

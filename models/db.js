@@ -13,7 +13,7 @@ const createUserTable = () => {
       auth_tab(
         uid SERIAL PRIMARY KEY,
         uname VARCHAR(25) UNIQUE NOT NULL,
-        password VARCHAR(25) UNIQUE NOT NULL
+        password VARCHAR(100) UNIQUE NOT NULL
       )`;
 
   pool.connect().then(client => {

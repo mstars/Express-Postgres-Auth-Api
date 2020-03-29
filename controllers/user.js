@@ -2,7 +2,6 @@ var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
-
 require('dotenv').config()
 const { pool } = require('./../models/dbconnection');
 
@@ -65,7 +64,7 @@ class userController {
       var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       var dateTime = date + ' ' + time;
 
-      const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(err => {
+      const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(error => {
         if (error) {
           // throw error
           if (error.code == '23505') {
@@ -74,11 +73,10 @@ class userController {
           if (error.code == '23502') {
             return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Username can not be null.' })
           }
-          console.log(error);
           return response.status(201).json({ status: 'failed', message: 'Registration Failed.', error })
         }
       })
-      if (userSave.rowCount != 0) {
+      if (userSave.rowCount != 0 || userSave.rowCount !=undefined || userSave.rowCount!=null) {
         const fetchUid = await client.query("SELECT uid from auth_tab where uname= $1", [uname]).catch(err => {
           console.log(err);
         })
@@ -89,7 +87,7 @@ class userController {
           return response.status(500).send({ msg: err.message });
         });
         // Send the email
-        if (saveToken.rowCount != 0) {
+        if (saveToken.rowCount != 0 || saveToken.rowCount !=undefined || saveToken.rowCount!=null) {
           var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
           var mailOptions = { from: 'no-reply@demo.com', to: email, subject: 'Account Verification Token', text: 'Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/confirmation\/' + token + '.\n' };
           transporter.sendMail(mailOptions, function (err) {

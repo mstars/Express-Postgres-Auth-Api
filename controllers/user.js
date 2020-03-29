@@ -1,4 +1,6 @@
 const { pool } = require('./../models/dbconnection');
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 class userController {
   async doLogin(request, response) {
@@ -35,12 +37,15 @@ class userController {
   }
 
   async doCreateAccount(request, response) {
-    const { uname, password } = request.body
+    const { uname, password } = request.body;
+
     const client = await pool.connect().catch(err => {
       console.log(err);
     })
     try {
-      client.query("INSERT INTO auth_tab (uname, password) VALUES ($1, $2)", [uname, password], error => {
+      bcrypt.hash(password, saltRounds)
+       .then(function(hashedPassword) {
+      client.query("INSERT INTO auth_tab (uname, password) VALUES ($1, $2)", [uname, hashedPassword], error => {
         if (error) {
           // throw error
           if (error.code == '23505') {
@@ -53,7 +58,7 @@ class userController {
         }
         return response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
       })
-
+      });
     }
     catch (err) {
       return response.status(400).send({

@@ -1,5 +1,8 @@
 var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+var crypto = require('crypto');
+var nodemailer = require('nodemailer');
+
 require('dotenv').config()
 const { pool } = require('./../models/dbconnection');
 
@@ -73,6 +76,24 @@ class userController {
           console.log(error);
           return response.status(201).json({ status: 'failed', message: 'Registration Failed.', error })
         }
+
+        // Create a verification token for this user
+        var token = rypto.randomBytes(16).toString('hex');
+
+        // Save the verification token
+        token.save(function (err) {
+         if (err) { return res.status(500).send({ msg: err.message }); }
+
+            // Send the email
+          var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
+            var mailOptions = { from: 'no-reply@demo.com', to: email, subject: 'Account Verification Token', text: 'Hello,\n\n' + 'Please verify your account by clicking the link: \nhttp:\/\/' + req.headers.host + '\/confirmation\/' + token + '.\n' };
+            transporter.sendMail(mailOptions, function (err) {
+                if (err) { return res.status(500).send({ msg: err.message }); }
+                res.status(200).send('A verification email has been sent to ' + email + '.');
+            });
+        });
+
+
         return response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
       })
     }

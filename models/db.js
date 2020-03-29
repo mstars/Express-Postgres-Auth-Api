@@ -36,5 +36,3 @@ const createUserTable = () => {
 module.exports = {
   createUserTable
 };
-
-// require('make-runnable');

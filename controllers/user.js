@@ -3,7 +3,8 @@ const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 require('dotenv').config()
-const { pool } = require('./../models/dbconnection');
+const  pool  = require('./../models/dbconnection');
+const mailer = require('./mailer/mailer');
 
 const saltRounds = 10;
 
@@ -88,12 +89,7 @@ class userController {
         });
         // Send the email
         if (saveToken.rowCount != 0 || saveToken.rowCount !=undefined || saveToken.rowCount!=null) {
-          var transporter = nodemailer.createTransport({ service: 'Sendgrid', auth: { user: process.env.SENDGRID_USERNAME, pass: process.env.SENDGRID_PASSWORD } });
-          var mailOptions = { from: 'no-reply@demo.com', to: email, subject: 'Account Verification', text: 'Hello,\n\n Please verify your account by clicking the link: \nhttp:\/\/' + request.headers.host + '\/confirmation\/' + token + '.\n' };
-          transporter.sendMail(mailOptions, function (err) {
-            if (err) { return response.status(500).send({ msg: err.message }); }
-            return response.status(200).send({status: 'sucess', message: 'A verification email has been sent to ' + email + '.'});
-          });
+          mailer.sendMail(email,token);
         }
         else {
           return response.status(500).send({

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 require('dotenv').config()
-const  pool  = require('./../models/dbconnection');
+const  { pool }  = require('./../models/dbconnection');
 const mailer = require('./mailer/mailer');
 
 const saltRounds = 10;
@@ -89,7 +89,7 @@ class userController {
         });
         // Send the email
         if (saveToken.rowCount != 0 || saveToken.rowCount !=undefined || saveToken.rowCount!=null) {
-          mailer.sendMail(email,token);
+        mailer.sendMail(email,token);
         }
         else {
           return response.status(500).send({

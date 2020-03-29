@@ -6,18 +6,18 @@ class userController {
     try {
       pool.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], (error, results) => {
         if (error) {
-          response.status(201).json({ status: 'failed', message: 'Login unsuccesful.', error })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccesful.', error })
         }
         if (results.rows[0].uname == uname && results.rows[0].password == password) {
-          response.status(201).json({ status: 'sucess', message: 'Login succesfully.' })
+          return response.status(201).json({ status: 'sucess', message: 'Login succesfully.' })
         }
         else {
-          response.status(201).json({ status: 'failed', message: 'Login unsuccesfully.' })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccesfully.' })
         }
       })
     }
     catch (err) {
-      response.status(400).send({
+      return response.status(400).send({
         status: 'failed',
         message: 'Unforseen error occured.',
         error: err
@@ -31,13 +31,16 @@ class userController {
       pool.query("INSERT INTO auth_tab (uname, password) VALUES ($1, $2)", [uname, password], error => {
         if (error) {
           // throw error
-          response.status(201).json({ status: 'failed', message: 'Registered unsuccesfully.' })
+          if (error.code == '23505') {
+            return response.status(400).json({ status: 'failed', message: 'Registered unsuccesfully. Reason: Username already taken.' })
+          }
+          return response.status(201).json({ status: 'failed', message: 'Registered unsuccesfully.', error })
         }
-        response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
+        return response.status(201).json({ status: 'success', message: 'Registered succesfully.' })
       })
     }
     catch (err) {
-      response.status(400).send({
+      return response.status(400).send({
         status: 'failed',
         message: 'Unforseen error occured.',
         error: err

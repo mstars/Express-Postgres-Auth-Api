@@ -21,11 +21,9 @@ const createUserTable = () => {
       if(res.rowCount!=null){
         console.log('Auth table created');
       }
-      pool.end();
     })
     .catch((err) => {
       console.log(err);
-      pool.end();
     });
 }
 

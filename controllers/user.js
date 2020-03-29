@@ -19,6 +19,9 @@ class userController {
         if (results.rows.length<1) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: uname incorrect.', error })
         }
+        else if (results.rows[0].status='pending') {
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: Email has not been verified.'})
+        }
         else if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
           const token = jwt.sign({uname: uname},
             process.env.JWT_KEY,

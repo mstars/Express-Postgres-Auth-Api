@@ -2,7 +2,6 @@ var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const { pool } = require('./../models/dbconnection');
-const jwtAuth = require('./../middleware/jwtAuth');
 
 const saltRounds = 10;
 

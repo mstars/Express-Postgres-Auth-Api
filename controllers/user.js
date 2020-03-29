@@ -13,11 +13,14 @@ class userController {
         if (error) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccesful.', error })
         }
-        if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
+        if (results.rows.length<1) {
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccesful. Reason: uname incorrect.', error })
+        }
+        else if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
           return response.status(201).json({ status: 'sucess', message: 'Login succesfully.' })
         }
         else {
-          return response.status(201).json({ status: 'failed', message: 'Login unsuccesfully.' })
+          return response.status(201).json({ status: 'failed', message: 'Login unsuccesfully. Reason: password incorrect.' })
         }
       })
     }

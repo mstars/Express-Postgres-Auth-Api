@@ -16,15 +16,21 @@ const createUserTable = () => {
         password VARCHAR(25) UNIQUE NOT NULL
       )`;
 
-  pool.query(queryText)
-    .then((res) => {
-      if(res.rowCount!=null){
-        console.log('Auth table created');
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  pool.connect().then(client => {
+    client.query(queryText)
+      .then((res) => {
+        client.release()
+        if (res.rowCount != null) {
+          console.log('Auth table created');
+        }
+      })
+      .catch((err) => {
+        client.release()
+        console.log(err);
+      });
+  }).catch(err => {
+    console.log(err);
+  })
 }
 
 module.exports = {

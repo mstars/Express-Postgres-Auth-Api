@@ -1,8 +1,7 @@
 require('dotenv').config()
 const { pool } = require('./../../models/dbconnection');
 
-class forgotPassword{
-    async doForgotPassword(request, response) {
+async function doForgotPassword(request, response) {
         const { email } = request.body;    
         const client = await pool.connect().catch(err => {
         })
@@ -21,7 +20,7 @@ class forgotPassword{
             });
             // Send the email
             if (saveToken.rowCount != 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
-              const mailSent = await mailer.sendMail(email, token).catch(err => {
+              const mailSent = await mailer.sendMail(email, token, 'forgot').catch(err => {
                 return response.status(500).send({ message: err.message })
               });
               if (mailSent) {
@@ -47,6 +46,6 @@ class forgotPassword{
           client.release();
         }
       }
-}
 
-module.exports = new forgotPassword
+
+module.exports = {doForgotPassword}

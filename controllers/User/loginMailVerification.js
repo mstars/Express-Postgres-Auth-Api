@@ -1,9 +1,7 @@
 require('dotenv').config()
 const { pool } = require('./../../models/dbconnection');
 
-class loginMailVerification{
-
-    async verifyToken(request, response) {
+async function verifyToken(request, response) {
         const token = request.query.token;
         const client = await pool.connect().catch(err => {
         })
@@ -45,6 +43,6 @@ class loginMailVerification{
           client.release();
         }
       }
-}
 
-module.exports = new loginMailVerification
+
+module.exports = {verifyToken}

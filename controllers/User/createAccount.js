@@ -7,8 +7,7 @@ const saltRounds = 10;
 const { pool } = require('./../../models/dbconnection');
 const mailer = require('./../mailer/mailer');
 
-class createAccount{
-    async doCreateAccount(request, response) {
+async function doCreateAccount(request, response) {
         const { uname, email, password } = request.body;
     
         const client = await pool.connect().catch(err => {
@@ -48,7 +47,7 @@ class createAccount{
             });
             // Send the email
             if (saveToken.rowCount != 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
-              const mailSent = await mailer.sendMail(email, token).catch(err => {
+              const mailSent = await mailer.sendMail(email, token, 'verify').catch(err => {
                 return response.status(500).send({ message: err.message })
               });
               if (mailSent) {
@@ -72,6 +71,5 @@ class createAccount{
         }
       }
     
-}
 
-module.exports = new createAccount
+module.exports = {doCreateAccount}

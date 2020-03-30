@@ -7,9 +7,7 @@ const mailer = require('./../mailer/mailer');
 
 const saltRounds = 10;
 
-class login{
-
-    async doLogin(request, response) {
+async function doLogin(request, response) {
         const { uname, password } = request.body
         const client = await pool.connect().catch(err => {
         })
@@ -51,6 +49,6 @@ class login{
           client.release();
         }
       }
-}
 
-module.exports = new login
+
+module.exports = {doLogin}

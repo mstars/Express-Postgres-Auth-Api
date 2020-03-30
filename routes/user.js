@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const userController  = require('./../controllers/user');
 
-router.post('/v1/users/createAccount',userController.doCreateAccount);
-router.post('/v1/users/login',userController.doLogin);
-router.get('/v1/users/verify',userController.verifyToken);
+const userCreationController  = require('./../controllers/User/createAccount');
+const userLoginController  = require('./../controllers/User/login');
+const userLoginVerificationController  = require('./../controllers/User/loginMailVerification');
+
+router.post('/v1/users/createAccount',userCreationController.doCreateAccount);
+router.post('/v1/users/login',userLoginController.doLogin);
+router.get('/v1/users/verify',userLoginVerificationController.verifyToken);
 
 module.exports = router;

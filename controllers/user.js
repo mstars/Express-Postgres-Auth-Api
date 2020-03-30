@@ -15,15 +15,19 @@ class userController {
     })
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
+        console.log(results);
         if (error) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful.', error })
         }
         if (results.rows.length < 1) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: uname incorrect.', error })
         }
+
         else if (results.rows[0].status = 'pending') {
+          console.log(results.rows[0]);
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: Email has not been verified.' })
         }
+
         else if (results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
           const token = jwt.sign({ uname: uname },
             process.env.JWT_KEY,
@@ -120,7 +124,7 @@ class userController {
     })
     try {
       client.query("SELECT * FROM tokens_tab WHERE verifytoken= $1", [token], async (error, results) => {
-        if(error){  
+        if(error){
           return response.status(400).json({ status: 'failed', message: 'Unable to verify your account.' })
         }
         if (results.rows.length < 1) {

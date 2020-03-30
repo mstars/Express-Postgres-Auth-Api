@@ -114,5 +114,36 @@ class userController {
   }
 }
 
+async verifyToken(request, response) {
+  const { token} = request.body
+  const client = await pool.connect().catch(err => {
+  })
+  try {
+    client.query("SELECT * FROM token_tab WHERE verifytoken= $1", [token], async (error, results) => {
+      // if (error) {
+      //   return response.status(201).json({ status: 'failed', message: 'Token Expired.', error })
+      // }
+      if (results.rows.length < 1) {
+        return response.status(201).json({ status: 'failed', message: 'Account verification failed. Reason: token doesnot exist.', error })
+      }
+
+        return response.status(201).json({ status: 'sucess', message: 'Account verified.', token: token })
+      }
+      else {
+        return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: password incorrect.' })
+      }
+    })
+  }
+  catch (err) {
+    return response.status(500).send({
+      status: 'failed',
+      message: 'Unforseen error occured.',
+      error: err
+    })
+  }
+  finally {
+    client.release();
+  }
+}
 
 module.exports = new userController

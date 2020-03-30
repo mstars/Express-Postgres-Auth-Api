@@ -77,7 +77,7 @@ class userController {
           return response.status(201).json({ status: 'failed', message: 'Registration Failed.', error })
         }
       })
-      if (userSave.rowCount != 0 || userSave.rowCount != undefined || userSave.rowCount != null) {
+      if (userSave.rowCount != 0 && userSave.rowCount != undefined && userSave.rowCount != null) {
         const fetchUid = await client.query("SELECT uid from auth_tab where uname= $1", [uname]).catch(err => {
           console.log(err);
         })
@@ -88,7 +88,7 @@ class userController {
           return response.status(500).send({ msg: err.message });
         });
         // Send the email
-        if (saveToken.rowCount != 0 || saveToken.rowCount != undefined || saveToken.rowCount != null) {
+        if (saveToken.rowCount != 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
           const mailSent = await mailer.sendMail(email, token).catch(err=>{
             return response.status(500).send({message:err.message})
           });
@@ -96,23 +96,12 @@ class userController {
             return response.status(200).send({message:mailSent.message});
           }
         }
-        else {
-          return response.status(500).send({
-            status: 'failed',
-            message: 'Unforseen error occured.'
-          })
-        }
 
-      }
-      else {
-        return response.status(500).send({
-          status: 'failed',
-          message: 'Unforseen error occured.'
-        })
       }
 
     }
     catch (err) {
+      console.log(err);
       return response.status(500).send({
         status: 'failed',
         message: 'Unforseen error occured.',

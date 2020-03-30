@@ -115,18 +115,20 @@ class userController {
 }
 
 async verifyToken(request, response) {
-  const { token} = request.body
+  const { token,email} = request.body
   const client = await pool.connect().catch(err => {
   })
   try {
     client.query("SELECT * FROM token_tab WHERE verifytoken= $1", [token], async (error, results) => {
-      // if (error) {
-      //   return response.status(201).json({ status: 'failed', message: 'Token Expired.', error })
-      // }
+      const fetchUid = await client.query("SELECT uid from auth_tab where email= $1", [email]).catch(err => {
+
+      })
       if (results.rows.length < 1) {
         return response.status(201).json({ status: 'failed', message: 'Account verification failed. Reason: token doesnot exist.', error })
       }
+      await client.query("UPDATE auth_tab SET status= $1 WHERE uid =$2", ['active',fetchUid]).catch(err => {
 
+      })
         return response.status(201).json({ status: 'sucess', message: 'Account verified.', token: token })
       }
       else {

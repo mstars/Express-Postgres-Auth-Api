@@ -6,8 +6,6 @@ const cors = require('cors');
 const initDB = require('./models/db');
 
 const api  = require('./routes/user');
-const pool  = require('./models/dbconnection');
-const userController  = require('./controllers/user');
 
 initDB.createUserTable();
 initDB.createTokenTable();

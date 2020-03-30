@@ -1,11 +1,5 @@
-var bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-var crypto = require('crypto');
 require('dotenv').config()
-const { pool } = require('./../models/dbconnection');
-const mailer = require('./mailer/mailer');
-
-const saltRounds = 10;
+const { pool } = require('./../../models/dbconnection');
 
 class loginMailVerification{
 

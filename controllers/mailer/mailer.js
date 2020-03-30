@@ -15,7 +15,7 @@ const fillData={
     subTitle: "Reset Password",
     mainTitle: "Reset Password",
     mailContent: `please click on the link given below to reset your password.`,
-    endPoint:'resetpassword',
+    endPoint:'forgotPassword',
     btnText: "Reset Password",
     respMessage: 'A password reset link has been sent to '
   }

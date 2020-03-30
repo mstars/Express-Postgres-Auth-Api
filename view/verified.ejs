@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <title><% if(verified){ %>
+    Success
+    <% } else { %>
+    Failed
+    <% } %>
+    </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+        }
+
+        .centered {
+            height: 100%;
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .msg {
+            font-size: 20px;
+            color: #5C5C5C;
+            display: grid;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            width: 60vh;
+        }
+
+        .check-color {
+            color: #0fad00;
+            font-size: 2rem;
+        }
+
+        .times-color {
+            color: red;
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <% if(verified){ %>
+    <div class="container">
+        <div class="row text-center centered">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <br><br>
+                <h2 style="color:#0fad00">Success</h2>
+                <i class="fa fa-check-circle check-color"></i>
+                <h3>Dear, <%= user %></h3>
+                <i>
+                    <p class="msg">Thank you for verifying your Email account. You can now login through our mobile app
+                        to start using the service.</p>
+                </i>
+            </div>
+        </div>
+    </div>
+    <% } else { %>
+    <div class="container">
+        <div class="row text-center centered">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <br><br>
+                <h2 style="color:red">Failed</h2>
+                <i class="fa fa-times-circle times-color"></i>
+                <i>
+                    <p class="msg"><%= message %></p>
+                </i>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</body>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</html>

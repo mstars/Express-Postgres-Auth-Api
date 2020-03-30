@@ -65,12 +65,12 @@ class userController {
       const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(error => {
         if (error) {
           // console.log(error);
-            if(error.code == '23505' && error.constraint == 'auth_tab_email_key'){
-              return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Email already exist'})
-            }
-            if(error.code == '23505' && error.constraint == 'auth_tab_uname_key'){
-              return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: uname already exist'})
-            }
+          if (error.code == '23505' && error.constraint == 'auth_tab_email_key') {
+            return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Email already exist' })
+          }
+          if (error.code == '23505' && error.constraint == 'auth_tab_uname_key') {
+            return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: uname already exist' })
+          }
           if (error.code == '23502') {
             return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Username can not be null.' })
           }
@@ -89,11 +89,11 @@ class userController {
         });
         // Send the email
         if (saveToken.rowCount != 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
-          const mailSent = await mailer.sendMail(email, token).catch(err=>{
-            return response.status(500).send({message:err.message})
+          const mailSent = await mailer.sendMail(email, token).catch(err => {
+            return response.status(500).send({ message: err.message })
           });
-          if(mailSent){
-            return response.status(200).send({message:mailSent.message});
+          if (mailSent) {
+            return response.status(200).send({ message: mailSent.message });
           }
         }
 
@@ -112,40 +112,49 @@ class userController {
       client.release();
     }
   }
-}
 
-async verifyToken(request, response) {
-  const { token,email} = request.body
-  const client = await pool.connect().catch(err => {
-  })
-  try {
-    client.query("SELECT * FROM token_tab WHERE verifytoken= $1", [token], async (error, results) => {
-      const fetchUid = await client.query("SELECT uid from auth_tab where email= $1", [email]).catch(err => {
+
+  async verifyToken(request, response) {
+    const token = request.query.token;
+    const client = await pool.connect().catch(err => {
+    })
+    try {
+      client.query("SELECT * FROM tokens_tab WHERE verifytoken= $1", [token], async (error, results) => {
+        if(error){  
+          return response.status(400).json({ status: 'failed', message: 'Unable to verify your account.' })
+        }
+        if (results.rows.length < 1) {
+          return response.status(400).json({ status: 'failed', message: 'Account verification failed. Reason: Invalid token.' });
+        }
+        else {
+          const updateStatus = await client.query("UPDATE auth_tab SET status= $1 WHERE uid =$2", ['active', results.rows[0].userid]).catch(err => {
+            console.log(err);
+          })
+          if (updateStatus.rowCount != 0 && updateStatus.rowCount != undefined && updateStatus.rowCount != null) {
+            const updateToken = await client.query("DELETE FROM tokens_tab WHERE verifytoken =$1", [token]).catch(err => {
+              console.log(err);
+            });
+            if(updateToken.rowCount != 0 && updateToken.rowCount != undefined && updateToken.rowCount != null){
+              return response.status(201).json({ status: 'sucess', message: 'Account verified.', token: token });
+            }
+          }
+          else {
+            return response.status(400).json({ status: 'failed', message: 'Unable to verify your account.' });
+          }
+        }
 
       })
-      if (results.rows.length < 1) {
-        return response.status(201).json({ status: 'failed', message: 'Account verification failed. Reason: token doesnot exist.', error })
-      }
-      await client.query("UPDATE auth_tab SET status= $1 WHERE uid =$2", ['active',fetchUid]).catch(err => {
-
+    }
+    catch (err) {
+      return response.status(500).send({
+        status: 'failed',
+        message: 'Unforseen error occured.',
+        error: err
       })
-        return response.status(201).json({ status: 'sucess', message: 'Account verified.', token: token })
-      }
-      else {
-        return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: password incorrect.' })
-      }
-    })
-  }
-  catch (err) {
-    return response.status(500).send({
-      status: 'failed',
-      message: 'Unforseen error occured.',
-      error: err
-    })
-  }
-  finally {
-    client.release();
+    }
+    finally {
+      client.release();
+    }
   }
 }
-
 module.exports = new userController

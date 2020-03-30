@@ -13,7 +13,7 @@ class mailer {
         mainTitle: "Account verification",
         mailContent: `please verify your email using the verification
     button below.`,
-        buttonLink: "http://localhost:3000/verify?" + token,
+        buttonLink: "http://localhost:3000/api/v1/users/verify?token=" + token,
         buttonText: "verify"
       }
 

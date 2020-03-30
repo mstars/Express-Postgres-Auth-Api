@@ -89,7 +89,6 @@ class userController {
         });
         // Send the email
         if (saveToken.rowCount != 0 || saveToken.rowCount != undefined || saveToken.rowCount != null) {
-          console.log('here');
           const mailSent = await mailer.sendMail(email, token).catch(err=>{
             return response.status(500).send({message:err.message})
           });

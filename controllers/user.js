@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 var crypto = require('crypto');
 var nodemailer = require('nodemailer');
 require('dotenv').config()
-const  { pool }  = require('./../models/dbconnection');
+const { pool } = require('./../models/dbconnection');
 const mailer = require('./mailer/mailer');
 
 const saltRounds = 10;
@@ -77,7 +77,7 @@ class userController {
           return response.status(201).json({ status: 'failed', message: 'Registration Failed.', error })
         }
       })
-      if (userSave.rowCount != 0 || userSave.rowCount !=undefined || userSave.rowCount!=null) {
+      if (userSave.rowCount != 0 || userSave.rowCount != undefined || userSave.rowCount != null) {
         const fetchUid = await client.query("SELECT uid from auth_tab where uname= $1", [uname]).catch(err => {
           console.log(err);
         })
@@ -88,8 +88,14 @@ class userController {
           return response.status(500).send({ msg: err.message });
         });
         // Send the email
-        if (saveToken.rowCount != 0 || saveToken.rowCount !=undefined || saveToken.rowCount!=null) {
-        mailer.sendMail(email,token);
+        if (saveToken.rowCount != 0 || saveToken.rowCount != undefined || saveToken.rowCount != null) {
+          console.log('here');
+          const mailSent = await mailer.sendMail(email, token).catch(err=>{
+            return response.status(500).send({message:err.message})
+          });
+          if(mailSent){
+            return response.status(200).send({message:mailSent.message});
+          }
         }
         else {
           return response.status(500).send({

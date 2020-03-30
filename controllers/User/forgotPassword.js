@@ -6,9 +6,9 @@ async function doForgotPassword(request, response) {
         const client = await pool.connect().catch(err => {
         })
         try {
-        
+
             const fetchUid = await client.query("SELECT uid from auth_tab where email= $1", [email]).catch(err => {
-    console.log(fetchUid);
+            console.log(fetchUid);
     
             })
               if (fetchUid.rowCount != 0 && fetchUid.rowCount != undefined && fetchUid.rowCount != null) {

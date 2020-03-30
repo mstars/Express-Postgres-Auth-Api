@@ -15,7 +15,7 @@ class userController {
     })
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
-        console.log(results.rows[0].status);
+        const switchtatusChecker = results.rows[0].status;
         if (error) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful.', error })
         }
@@ -23,8 +23,7 @@ class userController {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: uname incorrect.', error })
         }
 
-        else if (results.rows[0].status = 'pending') {
-          console.log(results.rows[0].status);
+        else if (results.rows[0].status == 'pending') {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: Email has not been verified.' })
         }
 

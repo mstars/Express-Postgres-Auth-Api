@@ -67,8 +67,6 @@ class userController {
 
       const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(error => {
         if (error) {
-          // throw error
-          // if (error.code == '23505') {
           console.log(error);
             if(error.code == '23505' && error.constraint == 'auth_tab_email_key'){
               return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Email already exist'})
@@ -76,7 +74,6 @@ class userController {
             if(error.code == '23505' && error.constraint == 'auth_tab_uname_key'){
               return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: uname already exist'})
             }
-          // }
           if (error.code == '23502') {
             return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Username can not be null.' })
           }

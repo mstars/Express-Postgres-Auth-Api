@@ -15,7 +15,7 @@ class userController {
     })
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
-        console.log(results);
+        console.log(results.rows[0].status);
         if (error) {
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful.', error })
         }
@@ -24,7 +24,7 @@ class userController {
         }
 
         else if (results.rows[0].status = 'pending') {
-          console.log(results.rows[0]);
+          console.log(results.rows[0].status);
           return response.status(201).json({ status: 'failed', message: 'Login unsuccessful. Reason: Email has not been verified.' })
         }
 

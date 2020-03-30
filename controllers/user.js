@@ -12,7 +12,6 @@ class userController {
   async doLogin(request, response) {
     const { uname, password } = request.body
     const client = await pool.connect().catch(err => {
-      console.log(err);
     })
     try {
       client.query("SELECT * FROM auth_tab WHERE uname= $1", [uname], async (error, results) => {
@@ -54,11 +53,9 @@ class userController {
     const { uname, email, password } = request.body;
 
     const client = await pool.connect().catch(err => {
-      console.log(err);
     })
     try {
       const hashedPassword = await bcrypt.hash(password, saltRounds).catch(err => {
-        console.log(err);
       })
       var today = new Date();
       var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
@@ -67,7 +64,7 @@ class userController {
 
       const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(error => {
         if (error) {
-          console.log(error);
+          // console.log(error);
             if(error.code == '23505' && error.constraint == 'auth_tab_email_key'){
               return response.status(500).json({ status: 'failed', message: 'Registration Failed. Reason: Email already exist'})
             }
@@ -82,7 +79,7 @@ class userController {
       })
       if (userSave.rowCount != 0 && userSave.rowCount != undefined && userSave.rowCount != null) {
         const fetchUid = await client.query("SELECT uid from auth_tab where uname= $1", [uname]).catch(err => {
-          console.log(err);
+
         })
         // Create a verification token for this user
         var token = crypto.randomBytes(16).toString('hex');
@@ -104,7 +101,7 @@ class userController {
 
     }
     catch (err) {
-      console.log(err);
+
       return response.status(500).send({
         status: 'failed',
         message: 'Unforseen error occured.',

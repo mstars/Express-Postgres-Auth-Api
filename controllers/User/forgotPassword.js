@@ -19,7 +19,7 @@ async function doForgotPassword(request, response) {
       console.log(err);
 
     })
-    if (fetchUid.rowCount != 0 && fetchUid.rowCount != undefined && fetchUid.rowCount != null) {
+    if (fetchUid.rowCount > 0 && fetchUid.rowCount != undefined && fetchUid.rowCount != null) {
       // Create a verification token for this user
       var token = crypto.randomBytes(16).toString('hex');
       console.log(token)
@@ -29,7 +29,7 @@ async function doForgotPassword(request, response) {
         return response.status(500).send({ msg: err.message });
       });
       // Send the email
-      if (saveToken.rowCount != 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
+      if (saveToken.rowCount > 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
         const mailSent = await mailer.sendMail(email, token, 'forgot').catch(err => {
           console.log(err);
           return response.status(500).send({ message: err.message })
@@ -67,11 +67,11 @@ async function renderResetPassword(request, response) {
       console.log(err);
       return response.render("response", { status: false, message: 'Invalid token' });
     })
-    if (fetchToken != 0 && fetchToken != undefined && fetchToken != null) {
-      return response.render("changepassword", { userid: fetchToken.rows[0].uid, token })
+    if (fetchToken.rowCount > 0 && fetchToken.rowCount != undefined && fetchToken.rowCount != null) {
+      return response.render("changepassword", { userid: fetchToken.rows[0].userid, token })
     }
     else if (fetchToken.rowCount == 0) {
-      return response.render("response", { status: false, message: 'Unfortunately some error occured' });
+      return response.render("response", { status: false, message: 'Invalid token' });
     }
   } catch (err) {
     console.log(err);
@@ -103,14 +103,15 @@ async function resetPassword(request, response) {
           error: err
         })
       })
-      if (updatePassword != 0 && updatePassword != undefined && updatePassword != null) {
+
+      if (updatePassword.rowCount > 0 && updatePassword.rowCount != undefined && updatePassword.rowCount != null) {
         const updateToken = await client.query("DELETE FROM tokens_tab where verifyToken=$1", [token]).catch(err => {
           console.log(err);
         })
-        if (updateToken != 0 && updateToken != undefined && updateToken != null) {
+        if (updateToken.rowCount > 0 && updateToken.rowCount != undefined && updateToken.rowCount != null) {
           return response.status(200).send({ status: true, message: 'Password reset successful.' })
         }
-        else if (updateToken == 0) {
+        else if (updateToken.rowCount == 0) {
           return response.status(400).send({ status: false, message: 'Unable to update password.' });
         }
       }

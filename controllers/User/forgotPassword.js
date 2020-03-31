@@ -68,7 +68,7 @@ async function renderResetPassword(request, response) {
       return response.render("response", { status: false, message: 'Invalid token' });
     })
     if (fetchToken != 0 && fetchToken != undefined && fetchToken != null) {
-      return response.render("changepassword", { userid: fetchToken.rows[0].userid, token })
+      return response.render("changepassword", { userid: fetchToken.rows[0].uid, token })
     }
     else if (fetchToken.rowCount == 0) {
       return response.render("response", { status: false, message: 'Unfortunately some error occured' });

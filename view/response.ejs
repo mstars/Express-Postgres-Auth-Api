@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title><% if(verified){ %>
+    <title><% if(status){ %>
     Success
     <% } else { %>
     Failed
@@ -48,17 +48,15 @@
 </head>
 
 <body>
-    <% if(verified){ %>
+    <% if(status){ %>
     <div class="container">
         <div class="row text-center centered">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <br><br>
                 <h2 style="color:#0fad00">Success</h2>
                 <i class="fa fa-check-circle check-color"></i>
-                <h3>Dear, <%= user %></h3>
                 <i>
-                    <p class="msg">Thank you for verifying your Email account. You can now login through our mobile app
-                        to start using the service.</p>
+                    <p class="msg"><%= message %></p>
                 </i>
             </div>
         </div>

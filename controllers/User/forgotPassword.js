@@ -16,22 +16,22 @@ async function doForgotPassword(request, response) {
   try {
 
     const fetchUid = await client.query("SELECT uid from auth_tab where email= $1", [email]).catch(err => {
-      console.log(err);
+     
 
     })
     if (fetchUid.rowCount > 0 && fetchUid.rowCount != undefined && fetchUid.rowCount != null) {
       // Create a verification token for this user
       var token = crypto.randomBytes(16).toString('hex');
-      console.log(token)
+    
       // Save the verification token
       const saveToken = await client.query("INSERT INTO tokens_tab (verifyToken, userId, created ) VALUES ($1, $2, $3)", [token, fetchUid.rows[0].uid, dateTime]).catch(err => {
-        console.log(err);
+     
         return response.status(500).send({ msg: err.message });
       });
       // Send the email
       if (saveToken.rowCount > 0 && saveToken.rowCount != undefined && saveToken.rowCount != null) {
         const mailSent = await mailer.sendMail(email, token, 'forgot').catch(err => {
-          console.log(err);
+         
           return response.status(500).send({ message: err.message })
         });
         if (mailSent) {
@@ -64,7 +64,7 @@ async function renderResetPassword(request, response) {
   })
   try {
     const fetchToken = await client.query("SELECT * FROM tokens_tab WHERE verifyToken=$1", [token]).catch(err => {
-      console.log(err);
+     
       return response.render("response", { status: false, message: 'Invalid token' });
     })
     if (fetchToken.rowCount > 0 && fetchToken.rowCount != undefined && fetchToken.rowCount != null) {
@@ -74,7 +74,7 @@ async function renderResetPassword(request, response) {
       return response.render("response", { status: false, message: 'Invalid token' });
     }
   } catch (err) {
-    console.log(err);
+    
     return response.render("response", {
       status: false,
       message: 'Unforseen error occured.'
@@ -87,16 +87,16 @@ async function renderResetPassword(request, response) {
 
 async function resetPassword(request, response) {
   const { userid, token, password, confirmpassword } = request.body;
-  console.log(request.body)
+  
   const client = await pool.connect().catch(err => {
   })
   try {
     if (password == confirmpassword) {
       const hashedPassword = await bcrypt.hash(password, saltRounds).catch(err => {
-        console.log(err);
+        
       });
       const updatePassword = await client.query("update auth_tab set password=$1 where uid=$2", [hashedPassword,userid]).catch(err => {
-        console.log(err);
+       
         return response.status(400).send({
           status: false,
           message: 'Unforseen error occured.',
@@ -106,7 +106,7 @@ async function resetPassword(request, response) {
 
       if (updatePassword.rowCount > 0 && updatePassword.rowCount != undefined && updatePassword.rowCount != null) {
         const updateToken = await client.query("DELETE FROM tokens_tab where verifyToken=$1", [token]).catch(err => {
-          console.log(err);
+          
         })
         if (updateToken.rowCount > 0 && updateToken.rowCount != undefined && updateToken.rowCount != null) {
           return response.status(200).send({ status: true, message: 'Password reset successful.' })
@@ -120,7 +120,7 @@ async function resetPassword(request, response) {
       return response.status(400).send({ status: false, message: 'Passwords donot match' });
     }
   } catch (err) {
-    console.log(err);
+  
     return response.status(400).send({
       status: false,
       message: 'Unforseen error occured.',

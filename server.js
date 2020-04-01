@@ -27,7 +27,7 @@ app.get('/', (req, res) => res.status(200).send({
    appName        :'Postgres Authentication Server with Express.',
    serverStatus   :'Server is running.',
    lastUpdatedTime:dateTime,
-   auther         :'LT'
+   auther         :'capcod3r'
 
 }));
 

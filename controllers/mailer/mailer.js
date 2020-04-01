@@ -39,8 +39,8 @@ class mailer {
 
       const generalConfiguration = {
         supportEmail: "support@example.com",
-        companyName: "NetObjex Inc",
-        companyLogo: "https://www.netobjex.com/wp-content/themes/netobjex-4/images/nO_Logo.png"
+        companyName: "Demo",
+        companyLogo: "https://dummyimage.com/600x400/000/fff.png&text=logo"
       }
       let htmlContent = emailTemplate.htmlTemplateGenerator(emailConfiguration, generalConfiguration);
       // Provide SMTP Account Information

@@ -101,7 +101,7 @@ const template = `<html>
     <tbody><tr>
     <!-- ======= logo ======= -->
     <td align="center">
-    <a href="" style="display: block; border-style: none !important; border: 0 !important;" class="edit_img"><img editable="true" mc:edit="logo" width="60" border="0" style="display: block;" src="https://www.netobjex.com/wp-content/themes/netobjex-4/images/nO_Logo.png" alt=""></a>
+    <a href="" style="display: block; border-style: none !important; border: 0 !important;" class="edit_img"><img editable="true" mc:edit="logo" width="60" border="0" style="display: block;" src="https://dummyimage.com/600x400/000/fff.png&text=logo" alt=""></a>
     </td>
     </tr>
     </tbody></table>

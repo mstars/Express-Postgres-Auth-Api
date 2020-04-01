@@ -4,7 +4,7 @@
   "description": "An authentication system using Postgress and Express",
   "main": "server.js",
   "repository": "git@github.com:mstars/Express-Postgres-Auth-Api.git",
-  "author": "mstars <vellackallintothomas@gmail.com>",
+  "author": "mstars <vellackallintothomas@gmail.com> | mahi30795 <mahesh30795@gmail.com>",
   "license": "MIT",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

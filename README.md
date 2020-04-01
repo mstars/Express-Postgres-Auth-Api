@@ -17,8 +17,8 @@ SENDGRID_USERNAME=
 SENDGRID_PASSWORD=
 
 Step 2
-npm install
+yarn install
 
 Step 3 
-npm start
+yarn start
 ```

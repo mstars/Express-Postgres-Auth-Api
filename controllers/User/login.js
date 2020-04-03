@@ -115,8 +115,9 @@ async function doDisableTwoFactorAuth(request, response){
   const client = await pool.connect().catch(err => {
 
   })
-try {  
-  await client.query("update auth_tab set twofa_status=$1 where uid=$2", ['disabled',userid]).catch(err => {
+try {
+await client.query("update auth_tab set twofa_status=$1 where uid=$2", ['disabled',userid]).catch(err => {
+
   return response.status(500).send({
     status: 'failed',
     message: 'Unforseen error occured.',
@@ -124,7 +125,7 @@ try {
   })
 
 })
-
+  
     return response.status(201).json({ status: 'sucess', message: '2FA Disabled.'})   
 }
 

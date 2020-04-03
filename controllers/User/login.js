@@ -50,33 +50,30 @@ async function doLogin(request, response) {
       }
 
 async function doEnableTwoFactorAuth(request, response){
-  console.log("FAIL !");
   const { userid } = request.body;
   const client = await pool.connect().catch(err => {
 
   })
 try {
   var secret = speakeasy.generateSecret({length: 20});
-  QRCode.toDataURL(secret.otpauth_url, function(err, image_data) {
-  });
-  const updatePassword = await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['active',secret,userid]).catch(err => {
 
-    if(err){
-    return response.status(400).send({
-      status: false,
-      message: 'Unforseen error occured.',
-      error: err
-    })
-  }
-    return response.status(201).json({ status: 'sucess', message: '2FA Enabled.',qrCode: image_data}) 
-  })
-} catch (error) {
+
+await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['active',secret.base32,userid]).catch(err => {
+
   return response.status(500).send({
     status: 'failed',
     message: 'Unforseen error occured.',
     error: err
   })
+
+})
+  
+  QRCode.toDataURL(secret.otpauth_url, function(err, image_data) {
+
+    return response.status(201).json({ status: 'sucess', message: '2FA Enabled.', image_dta: image_data}) 
+  });   
 }
+
 
 finally {
   client.release();
@@ -84,4 +81,33 @@ finally {
 
   
 }
-module.exports = {doLogin, doEnableTwoFactorAuth}
+
+async function doDisableTwoFactorAuth(request, response){
+  const { userid } = request.body;
+  const client = await pool.connect().catch(err => {
+
+  })
+try {
+
+  var secret = speakeasy.generateSecret({length: 20});
+ await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['inactive',secret.base32,userid]).catch(err => {
+
+  return response.status(500).send({
+    status: 'failed',
+    message: 'Unforseen error occured.',
+    error: err
+  })
+
+})
+  
+    return response.status(201).json({ status: 'sucess', message: '2FA Disabled.'})   
+}
+
+
+finally {
+  client.release();
+}
+
+  
+}
+module.exports = {doLogin, doEnableTwoFactorAuth, doDisableTwoFactorAuth}

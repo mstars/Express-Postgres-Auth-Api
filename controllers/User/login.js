@@ -70,7 +70,7 @@ await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where ui
   
   QRCode.toDataURL(secret.otpauth_url, function(err, image_data) {
 
-    return response.status(201).json({ status: 'sucess', message: '2FA Enabled.', image_dta: image_data}) 
+    return response.status(201).json({ status: 'sucess', message: '2FA Enabled.', image_data: image_data}) 
   });   
 }
 
@@ -87,11 +87,8 @@ async function doDisableTwoFactorAuth(request, response){
   const client = await pool.connect().catch(err => {
 
   })
-try {
-
-  var secret = speakeasy.generateSecret({length: 20});
- await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['inactive',secret.base32,userid]).catch(err => {
-
+try {  
+  await client.query("update auth_tab set twofa_status=$1 where uid=$2", ['inactive',userid]).catch(err => {
   return response.status(500).send({
     status: 'failed',
     message: 'Unforseen error occured.',
@@ -99,7 +96,7 @@ try {
   })
 
 })
-  
+
     return response.status(201).json({ status: 'sucess', message: '2FA Disabled.'})   
 }
 

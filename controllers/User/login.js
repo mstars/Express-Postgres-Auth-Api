@@ -58,7 +58,7 @@ try {
   var secret = speakeasy.generateSecret({length: 20});
 
 
-await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['active',secret.base32,userid]).catch(err => {
+await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['enabled',secret.base32,userid]).catch(err => {
 
   return response.status(500).send({
     status: 'failed',
@@ -88,7 +88,7 @@ async function doDisableTwoFactorAuth(request, response){
 
   })
 try {  
-  await client.query("update auth_tab set twofa_status=$1 where uid=$2", ['inactive',userid]).catch(err => {
+  await client.query("update auth_tab set twofa_status=$1 where uid=$2", ['disabled',userid]).catch(err => {
   return response.status(500).send({
     status: 'failed',
     message: 'Unforseen error occured.',

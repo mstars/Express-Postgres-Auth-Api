@@ -1,11 +1,10 @@
 var bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-var crypto = require('crypto');
+var speakeasy = require('speakeasy');
+var QRCode = require('qrcode');
 require('dotenv').config()
 const { pool } = require('./../../models/dbconnection');
-const mailer = require('./../mailer/mailer');
 
-const saltRounds = 10;
 
 async function doLogin(request, response) {
         const { uname, password } = request.body
@@ -50,5 +49,39 @@ async function doLogin(request, response) {
         }
       }
 
+async function doEnableTwoFactorAuth(request, response){
+  console.log("FAIL !");
+  const { userid } = request.body;
+  const client = await pool.connect().catch(err => {
 
-module.exports = {doLogin}
+  })
+try {
+  var secret = speakeasy.generateSecret({length: 20});
+  QRCode.toDataURL(secret.otpauth_url, function(err, image_data) {
+  });
+  const updatePassword = await client.query("update auth_tab set twofa_status=$1,twofa_secret=$2 where uid=$3", ['active',secret,userid]).catch(err => {
+
+    if(err){
+    return response.status(400).send({
+      status: false,
+      message: 'Unforseen error occured.',
+      error: err
+    })
+  }
+    return response.status(201).json({ status: 'sucess', message: '2FA Enabled.',qrCode: image_data}) 
+  })
+} catch (error) {
+  return response.status(500).send({
+    status: 'failed',
+    message: 'Unforseen error occured.',
+    error: err
+  })
+}
+
+finally {
+  client.release();
+}
+
+  
+}
+module.exports = {doLogin, doEnableTwoFactorAuth}

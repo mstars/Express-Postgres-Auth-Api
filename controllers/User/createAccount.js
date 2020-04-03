@@ -20,7 +20,7 @@ async function doCreateAccount(request, response) {
           var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
           var dateTime = date + ' ' + time;
     
-          const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, created ) VALUES ($1, $2, $3, $4, $5 )", [uname, email, hashedPassword, 'pending', dateTime]).catch(error => {
+          const userSave = await client.query("INSERT INTO auth_tab (uname, email, password, status, twofa_status, twofa_secret, created ) VALUES ($1, $2, $3, $4, $5, $6, $7 )", [uname, email, hashedPassword, 'pending', 'inactive',uname, dateTime]).catch(error => {
             if (error) {
              
               if (error.code == '23505' && error.constraint == 'auth_tab_email_key') {

@@ -16,6 +16,8 @@ async function createUserTable() {
         email VARCHAR(50) UNIQUE NOT NULL,
         password VARCHAR(100) UNIQUE NOT NULL,
         status VARCHAR(25) NOT NULL,
+        twofa_status VARCHAR(25) NOT NULL,
+        twofa_secret VARCHAR(100) NOT NULL,
         created TIMESTAMP DEFAULT NULL
       )`;
 
@@ -27,7 +29,7 @@ async function createUserTable() {
       console.log('Auth table created');
     })
     .catch((err) => {
-      console.log(err);
+      console.log("This" + err);
     });
   client.release();
 }

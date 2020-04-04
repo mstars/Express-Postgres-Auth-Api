@@ -25,7 +25,7 @@ async function doLogin(request, response) {
             }
             //With 2FA
             else if (results.rows[0].twofa_status == 'enabled' && results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
-              const authVerification=response.render("verifyTwoFactorAuth");
+              const authVerification=response.render("2fa");
 
               if(authVerification.verified){
               const token = jwt.sign({ uname: uname },

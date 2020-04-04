@@ -137,33 +137,37 @@ async function doVerifyTwoFactorAuth(request, response) {
       })
 
     })
-    // This is provided the by the user via form POST
-    var userToken = code;
+    if (results.rowCount > 0 && results.rowCount != undefined && results.rowCount != null) {
+      // This is provided the by the user via form POST
+      var userToken = code;
 
-    // Load the secret.base32 from their user record in database
-    var secret = results.rows[0].twofa_secret;
+      // Load the secret.base32 from their user record in database
+      var secret = results.rows[0].twofa_secret;
 
-    // Verify that the user token matches what it should at this moment
-    var verified = speakeasy.totp.verify({
-      secret: secret,
-      encoding: 'base32',
-      token: userToken
-    });
-    if (verified) {
-      const token = jwt.sign({ uname: results.rows[0].uname },
-        process.env.JWT_KEY,
-        {
-          expiresIn: '24h' // expires in 24 hours
-        });
-      const removeToken = await client.query("UPDATE auth_tab SET twofa_token='' WHERE uid=$1", [results.rows[0].uid]).catch(err => {
-        console.log(err)
-      })
-      if (removeToken.rowCount > 0 && removeToken.rowCount != undefined && removeToken.rowCount != null) {
-        return response.status(201).json({ status: 'sucess', message: '2FA Auth Success.', token })
+      // Verify that the user token matches what it should at this moment
+      var verified = speakeasy.totp.verify({
+        secret: secret,
+        encoding: 'base32',
+        token: userToken
+      });
+      if (verified) {
+        const token = jwt.sign({ uname: results.rows[0].uname },
+          process.env.JWT_KEY,
+          {
+            expiresIn: '24h' // expires in 24 hours
+          });
+        const removeToken = await client.query("UPDATE auth_tab SET twofa_token='' WHERE uid=$1", [results.rows[0].uid]).catch(err => {
+          console.log(err)
+        })
+        if (removeToken.rowCount > 0 && removeToken.rowCount != undefined && removeToken.rowCount != null) {
+          return response.status(201).json({ status: 'sucess', message: '2FA Auth Success.', token })
+        }
       }
-    }
-    else {
-      return response.status(201).json({ status: 'sucess', message: 'Authentication Failed. Verification OTP is invalid' })
+      else {
+        return response.status(201).json({ status: 'failed', message: 'Authentication Failed. Verification OTP is invalid' })
+      }
+    } else {
+      return response.status(201).json({ status: 'failed', message: 'Ivalid token' })
     }
   }
 

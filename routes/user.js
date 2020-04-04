@@ -15,6 +15,6 @@ router.get('/v1/users/reset',userForgotPasswordController.renderResetPassword);
 router.post('/v1/users/resetPassword',userForgotPasswordController.resetPassword);
 router.post('/v1/users/enableTwoFactorAuth',jwtAuth.checkToken,userLoginController.doEnableTwoFactorAuth);
 router.post('/v1/users/disableTwoFactorAuth',jwtAuth.checkToken,userLoginController.doDisableTwoFactorAuth);
-router.post('/v1/users/verifyTwoFactorAuth',jwtAuth.checkToken,userLoginController.doVerifyTwoFactorAuth);
+router.post('/v1/users/verifyTwoFactorAuth',userLoginController.doVerifyTwoFactorAuth);
 
 module.exports = router;

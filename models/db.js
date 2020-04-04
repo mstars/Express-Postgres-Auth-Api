@@ -18,6 +18,7 @@ async function createUserTable() {
         status VARCHAR(25) NOT NULL,
         twofa_status VARCHAR(25) NOT NULL,
         twofa_secret VARCHAR(100) NOT NULL,
+        twofa_token VARCHAR(40),
         created TIMESTAMP DEFAULT NULL
       )`;
 

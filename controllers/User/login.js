@@ -155,7 +155,12 @@ async function doVerifyTwoFactorAuth(request, response) {
         {
           expiresIn: '24h' // expires in 24 hours
         });
-      return response.status(201).json({ status: 'sucess', message: '2FA Auth Success.', token })
+      const removeToken = await client.query("UPDATE auth_tab SET twofa_token='' WHERE uid=$1", [results.rows[0].uid]).catch(err => {
+        console.log(err)
+      })
+      if (removeToken.rowCount > 0 && removeToken.rowCount != undefined && removeToken.rowCount != null) {
+        return response.status(201).json({ status: 'sucess', message: '2FA Auth Success.', token })
+      }
     }
     else {
       return response.status(201).json({ status: 'sucess', message: 'Authentication Failed. Verification OTP is invalid' })

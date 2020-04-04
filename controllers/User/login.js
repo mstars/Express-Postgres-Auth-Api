@@ -25,19 +25,9 @@ async function doLogin(request, response) {
             }
             //With 2FA
             else if (results.rows[0].twofa_status == 'enabled' && results.rows[0].uname == uname && await bcrypt.compare(password, results.rows[0].password)) {
-           // This is provided the by the user via form POST
-            var userToken = params.get('token');
+              const authVerification=response.render("verifyTwoFactorAuth");
 
-           // Load the secret.base32 from their user record in database
-            var secret = results.rows[0].twofa_secret;
-
-           // Verify that the user token matches what it should at this moment
-            var verified = speakeasy.totp.verify({
-              secret: secret,
-              encoding: 'base32',
-              token: userToken
-             });
-              if(verified){
+              if(authVerification.verified){
               const token = jwt.sign({ uname: uname },
                 process.env.JWT_KEY,
                 {
@@ -136,4 +126,43 @@ finally {
 
   
 }
-module.exports = {doLogin, doEnableTwoFactorAuth, doDisableTwoFactorAuth}
+
+async function doVerifyTwoFactorAuth(request, response){
+  const { userid,code } = request.body;
+  const client = await pool.connect().catch(err => {
+
+  })
+try {
+await client.query("select * from auth_tab where uid=$1", [userid]).catch(err => {
+
+  return response.status(500).send({
+    status: 'failed',
+    message: 'Unforseen error occured.',
+    error: err
+  })
+
+})
+             // This is provided the by the user via form POST
+             var userToken = code;
+
+             // Load the secret.base32 from their user record in database
+              var secret = results.rows[0].twofa_secret;
+  
+             // Verify that the user token matches what it should at this moment
+              var verified = speakeasy.totp.verify({
+                secret: secret,
+                encoding: 'base32',
+                token: userToken
+               });      
+    return response.status(201).json({ status: 'sucess', message: '2FA Auth Success.', verified: verified})   
+}
+
+
+finally {
+  client.release();
+}
+
+  
+}
+
+module.exports = {doLogin, doEnableTwoFactorAuth, doDisableTwoFactorAuth, doVerifyTwoFactorAuth}
